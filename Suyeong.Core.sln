@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.Net.Udp", "Suy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.Util", "Suyeong.Core.Util\Suyeong.Core.Util.csproj", "{2C07A544-1BB0-460D-B4A5-534F663577B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.Text.Diff", "Suyeong.Core.Text.Diff\Suyeong.Core.Text.Diff.csproj", "{F9E9FCA8-71A6-4446-BD8A-9F42D3142C38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{2C07A544-1BB0-460D-B4A5-534F663577B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C07A544-1BB0-460D-B4A5-534F663577B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C07A544-1BB0-460D-B4A5-534F663577B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9E9FCA8-71A6-4446-BD8A-9F42D3142C38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9E9FCA8-71A6-4446-BD8A-9F42D3142C38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9E9FCA8-71A6-4446-BD8A-9F42D3142C38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9E9FCA8-71A6-4446-BD8A-9F42D3142C38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
