@@ -5,46 +5,58 @@ namespace Suyeong.Core.Net.Lib
     [Serializable]
     public abstract class Packet : IPacket
     {
-        PacketType type;
-        string protocol;
-
-        public Packet(PacketType type, string protocol)
+        public Packet(string protocol)
         {
-            this.type = type;
-            this.protocol = protocol;
+            this.Protocol = protocol;
         }
 
-        public PacketType Type { get { return this.type; } }
-        public string Protocol { get { return this.protocol; } }
+        public string Protocol { get; private set; }
     }
 
     [Serializable]
-    public class PacketMessage : Packet
+    public class PacketValue : Packet
     {
-        object data;
-
-        public PacketMessage(PacketType type, string protocol, object data) : base(type: type, protocol: protocol)
+        public PacketValue(string protocol, object value) : base(protocol: protocol)
         {
-            this.data = data;
+            this.Value = value;
         }
 
-        public object Data { get { return this.data; } }
+        public object Value { get; private set; }
+    }
+
+    [Serializable]
+    public class PacketJson : Packet
+    {
+        public PacketJson(string protocol, string json) : base(protocol: protocol)
+        {
+            this.Json = json;
+        }
+
+        public string Json { get; private set; }
+    }
+
+    [Serializable]
+    public class PacketSerialized : Packet
+    {
+        public PacketSerialized(string protocol, byte[] serializedData) : base(protocol: protocol)
+        {
+            this.SerializedData = serializedData;
+        }
+
+        public byte[] SerializedData { get; private set; }
     }
 
     [Serializable]
     public class PacketFile : Packet
     {
-        string fileName;
-        byte[] fileData;
-
-        public PacketFile(PacketType type, string protocol, string fileName, byte[] fileData) : base(type: type, protocol: protocol)
+        public PacketFile(string protocol, string fileName, byte[] fileData) : base(protocol: protocol)
         {
-            this.fileName = fileName;
-            this.fileData = fileData;
+            this.FileName = fileName;
+            this.FileData = fileData;
         }
 
-        public string FileName { get { return this.fileName; } }
-        public byte[] FileData { get { return this.fileData; } }
+        public string FileName { get; private set; }
+        public byte[] FileData { get; private set; }
     }
 
 }

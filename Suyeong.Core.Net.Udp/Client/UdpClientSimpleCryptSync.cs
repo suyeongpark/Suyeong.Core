@@ -1,27 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using Suyeong.Core.Net.Lib;
 
 namespace Suyeong.Core.Net.Udp
 {
-    public class UdpClientCryptSync
+    public class UdpClientSimpleCryptSync
     {
-        IPEndPoint serverEndPoint, clientEndPoint;
+        IPEndPoint serverEndPoint;
         byte[] key, iv;
 
-        public UdpClientCryptSync(string serverIP, int serverPort, byte[] key, byte[] iv, int clientPort = 0)
+        public UdpClientSimpleCryptSync(string serverIP, int serverPort, byte[] key, byte[] iv)
         {
             this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
-            this.clientEndPoint = new IPEndPoint(address: IPAddress.Any, port: clientPort);
             this.key = key;
             this.iv = iv;
         }
 
-        public void Send(IPacket sendPacket, Action<IPacket> callback)
+        public IPacket Send(IPacket sendPacket)
         {
-            IPacket receivePacket;
-            byte[] sendData, receiveData, compressData, decompressData;
+            IPacket receivePacket = default;
 
             try
             {
@@ -30,27 +29,35 @@ namespace Suyeong.Core.Net.Udp
                 using (UdpClient client = new UdpClient())
                 {
                     // 1. 보낼 데이터를 암호화한다.
-                    sendData = NetUtil.SerializeObject(data: sendPacket);
-                    compressData = NetUtil.Encrypt(data: sendData, key: this.key, iv: this.iv);
+                    byte[] sendData = NetUtil.SerializeObject(data: sendPacket);
+                    byte[] compressData = NetUtil.Encrypt(data: sendData, key: this.key, iv: this.iv);
 
                     // 2. 보낸다.
                     client.Send(dgram: compressData, bytes: compressData.Length, endPoint: this.serverEndPoint);
 
                     // 3. 결과의 데이터를 받는다.
-                    receiveData = client.Receive(remoteEP: ref this.clientEndPoint);
+                    IPEndPoint remoteEndPoint = null;
+                    byte[] receiveData = client.Receive(remoteEP: ref remoteEndPoint);
 
                     // 4. 결과는 암호화되어 있으므로 푼다.
-                    decompressData = NetUtil.Decrypt(data: receiveData, key: this.key, iv: this.iv);
+                    byte[] decompressData = NetUtil.Decrypt(data: receiveData, key: this.key, iv: this.iv);
                     receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
-
-                    // 5. 결과를 처리한다.
-                    callback(receivePacket);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine(ex);
             }
+
+            return receivePacket;
+        }
+    }
+
+    public class UdpClientSimpleCryptSyncs : List<UdpClientSimpleCryptSync>
+    {
+        public UdpClientSimpleCryptSyncs()
+        {
+
         }
     }
 }

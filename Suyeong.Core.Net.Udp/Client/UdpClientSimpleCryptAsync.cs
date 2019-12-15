@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -6,23 +7,21 @@ using Suyeong.Core.Net.Lib;
 
 namespace Suyeong.Core.Net.Udp
 {
-    public class UdpClientCryptCompressAsync
+    public class UdpClientSimpleCryptAsync
     {
         IPEndPoint serverEndPoint;
         byte[] key, iv;
 
-        public UdpClientCryptCompressAsync(string serverIP, int serverPort, byte[] key, byte[] iv)
+        public UdpClientSimpleCryptAsync(string serverIP, int serverPort, byte[] key, byte[] iv)
         {
             this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
             this.key = key;
             this.iv = iv;
         }
 
-        async public Task Send(IPacket sendPacket, Action<IPacket> callback)
+        async public Task<IPacket> Send(IPacket sendPacket)
         {
-            IPacket receivePacket;
-            UdpReceiveResult result;
-            byte[] sendData, encryptData, decryptData;
+            IPacket receivePacket = default;
 
             try
             {
@@ -31,27 +30,34 @@ namespace Suyeong.Core.Net.Udp
                 using (UdpClient client = new UdpClient())
                 {
                     // 1. 보낼 데이터를 암호화한다.
-                    sendData = NetUtil.SerializeObject(data: sendPacket);
-                    encryptData = await NetUtil.EncryptWithCompressAsync(data: sendData, key: this.key, iv: this.iv);
+                    byte[] sendData = NetUtil.SerializeObject(data: sendPacket);
+                    byte[] encryptData = await NetUtil.EncryptAsync(data: sendData, key: this.key, iv: this.iv);
 
                     // 2. 보낸다.
                     await client.SendAsync(datagram: encryptData, bytes: encryptData.Length, endPoint: this.serverEndPoint);
 
                     // 3. 결과의 데이터를 받는다.
-                    result = await client.ReceiveAsync();
+                    UdpReceiveResult result = await client.ReceiveAsync();
 
-                    // 4. 결과는 압축되어 있으므로 푼다.
-                    decryptData = await NetUtil.DecryptWithDecompressAsync(data: result.Buffer, key: this.key, iv: this.iv);
+                    // 4. 결과는 암호화되어 있으므로 푼다.
+                    byte[] decryptData = await NetUtil.DecryptAsync(data: result.Buffer, key: this.key, iv: this.iv);
                     receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
-
-                    // 5. 결과를 처리한다.
-                    callback(receivePacket);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine(ex);
             }
+
+            return receivePacket;
+        }
+    }
+
+    public class UdpClientSimpleCryptAsyncs : List<UdpClientSimpleCryptAsync>
+    {
+        public UdpClientSimpleCryptAsyncs()
+        {
+
         }
     }
 }

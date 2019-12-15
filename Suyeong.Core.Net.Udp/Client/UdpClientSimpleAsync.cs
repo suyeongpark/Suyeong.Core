@@ -1,24 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Suyeong.Core.Net.Lib;
 
 namespace Suyeong.Core.Net.Udp
 {
-    public class UdpClientSync
+    public class UdpClientSimpleAsync
     {
-        IPEndPoint serverEndPoint, clientEndPoint;
+        IPEndPoint serverEndPoint;
 
-        public UdpClientSync(string serverIP, int serverPort, int clientPort = 0)
+        public UdpClientSimpleAsync(string serverIP, int serverPort)
         {
             this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
-            this.clientEndPoint = new IPEndPoint(address: IPAddress.Any, port: clientPort);
         }
 
-        public void Send(IPacket sendPacket, Action<IPacket> callback)
+        async public Task<IPacket> Send(IPacket sendPacket)
         {
-            IPacket receivePacket;
-            byte[] sendData, receiveData, compressData, decompressData;
+            IPacket receivePacket = default;
 
             try
             {
@@ -27,27 +27,34 @@ namespace Suyeong.Core.Net.Udp
                 using (UdpClient client = new UdpClient())
                 {
                     // 1. 보낼 데이터를 압축한다.
-                    sendData = NetUtil.SerializeObject(data: sendPacket);
-                    compressData = NetUtil.Compress(data: sendData);
+                    byte[] sendData = NetUtil.SerializeObject(data: sendPacket);
+                    byte[] compressData = await NetUtil.CompressAsync(data: sendData);
 
                     // 2. 보낸다.
-                    client.Send(dgram: compressData, bytes: compressData.Length, endPoint: this.serverEndPoint);
+                    await client.SendAsync(datagram: compressData, bytes: compressData.Length, endPoint: this.serverEndPoint);
 
                     // 3. 결과의 데이터를 받는다.
-                    receiveData = client.Receive(remoteEP: ref this.clientEndPoint);
+                    UdpReceiveResult result = await client.ReceiveAsync();
 
                     // 4. 결과는 압축되어 있으므로 푼다.
-                    decompressData = NetUtil.Decompress(data: receiveData);
+                    byte[] decompressData = await NetUtil.DecompressAsync(data: result.Buffer);
                     receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
-
-                    // 5. 결과를 처리한다.
-                    callback(receivePacket);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine(ex);
             }
+
+            return receivePacket;
+        }
+    }
+
+    public class UdpClientSimpleAsyncs : List<UdpClientSimpleAsync>
+    {
+        public UdpClientSimpleAsyncs()
+        {
+
         }
     }
 }

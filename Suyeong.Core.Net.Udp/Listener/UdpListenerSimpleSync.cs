@@ -1,21 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using Suyeong.Core.Net.Lib;
 
 namespace Suyeong.Core.Net.Udp
 {
-    public class UdpListenerSync
+    public class UdpListenerSimpleSync : IDisposable
     {
         UdpClient listener;
         bool listenOn;
 
-        public UdpListenerSync(int portNum)
+        public UdpListenerSimpleSync(int portNum)
         {
             this.listener = new UdpClient(portNum);
         }
 
-        public void ListenerStart(Func<IPacket, IPacket> callback)
+        public void Dispose()
+        {
+            this.listener.Close();
+        }
+
+        public void Start(Func<IPacket, IPacket> callback)
         {
             listenOn = true;
 
@@ -44,16 +50,19 @@ namespace Suyeong.Core.Net.Udp
                     // 5. 요청을 보내온 곳으로 결과를 보낸다.
                     listener.Send(dgram: compressData, bytes: compressData.Length, endPoint: clientEndPoint);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    Console.WriteLine(ex);
                 }
             }
         }
+    }
 
-        public void ListenerStop()
+    public class UdpListenerSimpleSyncs : List<UdpListenerSimpleSync>
+    {
+        public UdpListenerSimpleSyncs()
         {
-            listenOn = false;
+
         }
     }
 }
