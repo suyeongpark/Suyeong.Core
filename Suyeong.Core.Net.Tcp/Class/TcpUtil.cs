@@ -22,7 +22,7 @@ namespace Suyeong.Core.Net.Tcp
                     {
                         buffer = new byte[Consts.SIZE_MAX < dataLength ? Consts.SIZE_MAX : dataLength];
                         nbytes = memoryStream.Read(buffer: buffer, offset: 0, count: buffer.Length);
-                        networkStream.Write(buffer: buffer, offset: 0, size: buffer.Length);
+                        networkStream.Write(buffer: buffer, offset: 0, size: nbytes);
                         dataLength -= nbytes;
                     }
                 }
@@ -52,7 +52,7 @@ namespace Suyeong.Core.Net.Tcp
                     {
                         buffer = new byte[Consts.SIZE_MAX < dataLength ? Consts.SIZE_MAX : dataLength];
                         nbytes = await memoryStream.ReadAsync(buffer: buffer, offset: 0, count: buffer.Length).ConfigureAwait(false);
-                        await networkStream.WriteAsync(buffer: buffer, offset: 0, count: buffer.Length).ConfigureAwait(false);
+                        await networkStream.WriteAsync(buffer: buffer, offset: 0, count: nbytes).ConfigureAwait(false);
                         dataLength -= nbytes;
                     }
                 }
@@ -78,7 +78,7 @@ namespace Suyeong.Core.Net.Tcp
                 {
                     buffer = new byte[Consts.SIZE_MAX < dataLength ? Consts.SIZE_MAX : dataLength];
                     nbytes = networkStream.Read(buffer: buffer, offset: 0, size: buffer.Length);
-                    memoryStream.Write(buffer: buffer, offset: 0, count: buffer.Length);
+                    memoryStream.Write(buffer: buffer, offset: 0, count: nbytes);
                     dataLength -= nbytes;
                 }
 
@@ -97,7 +97,7 @@ namespace Suyeong.Core.Net.Tcp
                 {
                     buffer = new byte[Consts.SIZE_MAX < dataLength ? Consts.SIZE_MAX : dataLength];
                     nbytes = await networkStream.ReadAsync(buffer: buffer, offset: 0, count: buffer.Length).ConfigureAwait(false);
-                    await memoryStream.WriteAsync(buffer: buffer, offset: 0, count: buffer.Length).ConfigureAwait(false);
+                    await memoryStream.WriteAsync(buffer: buffer, offset: 0, count: nbytes).ConfigureAwait(false);
                     dataLength -= nbytes;
                 }
 
