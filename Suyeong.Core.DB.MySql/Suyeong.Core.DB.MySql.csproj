@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -7,5 +7,9 @@
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.18" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetDir)&quot; &quot;E:\Suyeong\TestPrograms\references\Suyeong.Core.DB.MySql&quot;" />
+  </Target>
 
 </Project>
