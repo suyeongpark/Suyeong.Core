@@ -16,21 +16,21 @@ namespace Suyeong.Core.DB.MsSql
         {
             object scalar = null;
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                {
+                    try
                     {
                         scalar = command.ExecuteScalar();
                     }
+                    catch (SqlException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return scalar;
@@ -38,15 +38,20 @@ namespace Suyeong.Core.DB.MsSql
 
         public static object GetDataSingle(string conStr, string query, SqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             object scalar = null;
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                {
+                    try
                     {
                         foreach (SqlParameter parameter in parameters)
                         {
@@ -55,11 +60,11 @@ namespace Suyeong.Core.DB.MsSql
 
                         scalar = command.ExecuteScalar();
                     }
+                    catch (SqlException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return scalar;
@@ -69,21 +74,21 @@ namespace Suyeong.Core.DB.MsSql
         {
             object scalar = null;
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                {
+                    try
                     {
-                        scalar = await command.ExecuteScalarAsync();
+                        scalar = await command.ExecuteScalarAsync().ConfigureAwait(false);
+                    }
+                    catch (SqlException)
+                    {
+                        throw;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return scalar;
@@ -91,28 +96,33 @@ namespace Suyeong.Core.DB.MsSql
 
         async public static Task<object> GetDataSingleAsync(string conStr, string query, SqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             object scalar = null;
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                {
+                    try
                     {
                         foreach (SqlParameter parameter in parameters)
                         {
                             command.Parameters.Add(parameter);
                         }
 
-                        scalar = await command.ExecuteScalarAsync();
+                        scalar = await command.ExecuteScalarAsync().ConfigureAwait(false);
+                    }
+                    catch (SqlException)
+                    {
+                        throw;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return scalar;
@@ -122,23 +132,23 @@ namespace Suyeong.Core.DB.MsSql
         {
             DataTable table = new DataTable();
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
-                    using (SqlDataAdapter adapter = new SqlDataAdapter())
+                using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                using (SqlDataAdapter adapter = new SqlDataAdapter())
+                {
+                    try
                     {
                         adapter.SelectCommand = command;
                         adapter.Fill(table);
                     }
+                    catch (SqlException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return table;
@@ -146,16 +156,21 @@ namespace Suyeong.Core.DB.MsSql
 
         public static DataTable GetDataTable(string conStr, string query, SqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataTable table = new DataTable();
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
-                    using (SqlDataAdapter adapter = new SqlDataAdapter())
+                using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                using (SqlDataAdapter adapter = new SqlDataAdapter())
+                {
+                    try
                     {
                         foreach (SqlParameter parameter in parameters)
                         {
@@ -165,42 +180,47 @@ namespace Suyeong.Core.DB.MsSql
                         adapter.SelectCommand = command;
                         adapter.Fill(table);
                     }
+                    catch (SqlException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return table;
         }
 
-        async public static Task<DataTable> GetDataTableAsync(string conStr, string query, SqlParameter[] parameters = null)
+        async public static Task<DataTable> GetDataTableAsync(string conStr, string query)
         {
-            return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query, parameters: parameters));
+            return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query)).ConfigureAwait(false);
+        }
+
+        async public static Task<DataTable> GetDataTableAsync(string conStr, string query, SqlParameter[] parameters)
+        {
+            return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query, parameters: parameters)).ConfigureAwait(false);
         }
 
         public static DataSet GetDataSet(string conStr, string query)
         {
             DataSet dataSet = new DataSet();
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
-                    using (SqlDataAdapter adapter = new SqlDataAdapter())
+                using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                using (SqlDataAdapter adapter = new SqlDataAdapter())
+                {
+                    try
                     {
                         adapter.SelectCommand = command;
                         adapter.Fill(dataSet);
                     }
+                    catch (SqlException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return dataSet;
@@ -208,16 +228,21 @@ namespace Suyeong.Core.DB.MsSql
 
         public static DataSet GetDataSet(string conStr, string query, SqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataSet dataSet = new DataSet();
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
-                    using (SqlDataAdapter adapter = new SqlDataAdapter())
+                using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                using (SqlDataAdapter adapter = new SqlDataAdapter())
+                {
+                    try
                     {
                         foreach (SqlParameter parameter in parameters)
                         {
@@ -227,60 +252,52 @@ namespace Suyeong.Core.DB.MsSql
                         adapter.SelectCommand = command;
                         adapter.Fill(dataSet);
                     }
+                    catch (SqlException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return dataSet;
         }
 
-        async public static Task<DataSet> GetDataSetAsync(string conStr, string query, SqlParameter[] parameters = null)
+        async public static Task<DataSet> GetDataSetAsync(string conStr, string query)
         {
-            return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query, parameters: parameters));
+            return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query)).ConfigureAwait(false);
+        }
+
+        async public static Task<DataSet> GetDataSetAsync(string conStr, string query, SqlParameter[] parameters)
+        {
+            return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query, parameters: parameters)).ConfigureAwait(false);
         }
 
         public static bool SetQuery(string conStr, string query)
         {
             int result = 0;
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection, transaction: transaction))
                 {
-                    connection.Open();
-
-                    using (SqlTransaction transaction = connection.BeginTransaction())
-                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection, transaction: transaction))
+                    try
                     {
-                        try
-                        {
-                            result = command.ExecuteNonQuery();
+                        result = command.ExecuteNonQuery();
 
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
-                        }
-                        catch (Exception)
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (SqlException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (SqlException)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;
@@ -288,48 +305,40 @@ namespace Suyeong.Core.DB.MsSql
 
         public static bool SetQuery(string conStr, string query, SqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             int result = 0;
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection, transaction: transaction))
                 {
-                    connection.Open();
-
-                    using (SqlTransaction transaction = connection.BeginTransaction())
-                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection, transaction: transaction))
+                    try
                     {
-                        try
+                        foreach (SqlParameter parameter in parameters)
                         {
-                            foreach (SqlParameter parameter in parameters)
-                            {
-                                command.Parameters.Add(parameter);
-                            }
-
-                            result = command.ExecuteNonQuery();
-
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
+                            command.Parameters.Add(parameter);
                         }
-                        catch (Exception)
+
+                        result = command.ExecuteNonQuery();
+
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (SqlException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (SqlException)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;
@@ -337,47 +346,43 @@ namespace Suyeong.Core.DB.MsSql
 
         public static bool SetQuery(string conStr, DataTable table)
         {
+            if (table == null)
+            {
+                throw new NullReferenceException();
+            }
+            else if (string.IsNullOrWhiteSpace(table.TableName))
+            {
+                throw new ArgumentNullException(table.TableName);
+            }
+
             bool result = false;
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection: connection, copyOptions: SqlBulkCopyOptions.Default, externalTransaction: transaction))
                 {
-                    connection.Open();
-
-                    using (SqlTransaction transaction = connection.BeginTransaction())
-                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection: connection, copyOptions: SqlBulkCopyOptions.Default, externalTransaction: transaction))
+                    try
                     {
-                        try
-                        {
-                            bulkCopy.DestinationTableName = table.TableName;
+                        bulkCopy.DestinationTableName = table.TableName;
 
-                            foreach (DataColumn column in table.Columns)
-                            {
-                                bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
-                            }
-
-                            bulkCopy.WriteToServer(table);
-                            transaction.Commit();
-                            result = true;
-                        }
-                        catch (Exception)
+                        foreach (DataColumn column in table.Columns)
                         {
-                            try
-                            {
-                                transaction.Rollback();
-                            }
-                            catch (SqlException)
-                            {
-                                throw;
-                            }
+                            bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
                         }
+
+                        bulkCopy.WriteToServer(table);
+                        transaction.Commit();
+                        result = true;
+                    }
+                    catch (SqlException)
+                    {
+                        transaction.Rollback();
+                        throw;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result;
@@ -387,41 +392,28 @@ namespace Suyeong.Core.DB.MsSql
         {
             int result = 0;
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection, transaction: transaction))
                 {
-                    connection.Open();
-
-                    using (SqlTransaction transaction = connection.BeginTransaction())
-                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection, transaction: transaction))
+                    try
                     {
-                        try
-                        {
-                            result = await command.ExecuteNonQueryAsync();
+                        result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
 
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
-                        }
-                        catch (Exception)
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (SqlException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (SqlException)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;
@@ -429,48 +421,40 @@ namespace Suyeong.Core.DB.MsSql
 
         async public static Task<bool> SetQueryAsync(string conStr, string query, SqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             int result = 0;
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection, transaction: transaction))
                 {
-                    connection.Open();
-
-                    using (SqlTransaction transaction = connection.BeginTransaction())
-                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection, transaction: transaction))
+                    try
                     {
-                        try
+                        foreach (SqlParameter parameter in parameters)
                         {
-                            foreach (SqlParameter parameter in parameters)
-                            {
-                                command.Parameters.Add(parameter);
-                            }
-
-                            result = await command.ExecuteNonQueryAsync();
-
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
+                            command.Parameters.Add(parameter);
                         }
-                        catch (Exception)
+
+                        result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (SqlException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (SqlException)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;
@@ -478,47 +462,43 @@ namespace Suyeong.Core.DB.MsSql
 
         async public static Task<bool> SetQueryAsync(string conStr, DataTable table)
         {
+            if (table == null)
+            {
+                throw new NullReferenceException();
+            }
+            else if (string.IsNullOrWhiteSpace(table.TableName))
+            {
+                throw new ArgumentNullException(table.TableName);
+            }
+
             bool result = false;
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString: conStr))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
+                connection.Open();
+
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection: connection, copyOptions: SqlBulkCopyOptions.Default, externalTransaction: transaction))
                 {
-                    connection.Open();
-
-                    using (SqlTransaction transaction = connection.BeginTransaction())
-                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection: connection, copyOptions: SqlBulkCopyOptions.Default, externalTransaction: transaction))
+                    try
                     {
-                        try
-                        {
-                            bulkCopy.DestinationTableName = table.TableName;
+                        bulkCopy.DestinationTableName = table.TableName;
 
-                            foreach (DataColumn column in table.Columns)
-                            {
-                                bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
-                            }
-
-                            await bulkCopy.WriteToServerAsync(table);
-                            transaction.Commit();
-                            result = true;
-                        }
-                        catch (Exception)
+                        foreach (DataColumn column in table.Columns)
                         {
-                            try
-                            {
-                                transaction.Rollback();
-                            }
-                            catch (SqlException)
-                            {
-                                throw;
-                            }
+                            bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
                         }
+
+                        await bulkCopy.WriteToServerAsync(table).ConfigureAwait(false);
+                        transaction.Commit();
+                        result = true;
+                    }
+                    catch (SqlException)
+                    {
+                        transaction.Rollback();
+                        throw;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result;

@@ -18,6 +18,8 @@ namespace Suyeong.Core.Net.Udp
             this.iv = iv;
         }
 
+        public IPEndPoint ServerEndPoint { get { return this.serverEndPoint; } }
+
         public IPacket Send(IPacket sendPacket)
         {
             IPacket receivePacket = default;
@@ -44,7 +46,7 @@ namespace Suyeong.Core.Net.Udp
                     receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
                 }
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
                 Console.WriteLine(ex);
             }
@@ -53,9 +55,9 @@ namespace Suyeong.Core.Net.Udp
         }
     }
 
-    public class UdpClientSimpleCryptSyncs : List<UdpClientSimpleCryptSync>
+    public class UdpClientSimpleCryptSyncCollection : List<UdpClientSimpleCryptSync>
     {
-        public UdpClientSimpleCryptSyncs()
+        public UdpClientSimpleCryptSyncCollection()
         {
 
         }

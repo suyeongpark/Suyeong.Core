@@ -16,21 +16,21 @@ namespace Suyeong.Core.DB.Oracle
         {
             object scalar = null;
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                {
+                    try
                     {
                         scalar = command.ExecuteScalar();
                     }
+                    catch (OracleException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return scalar;
@@ -38,15 +38,20 @@ namespace Suyeong.Core.DB.Oracle
 
         public static object GetDataSingle(string conStr, string query, OracleParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             object scalar = null;
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                {
+                    try
                     {
                         foreach (OracleParameter parameter in parameters)
                         {
@@ -55,11 +60,11 @@ namespace Suyeong.Core.DB.Oracle
 
                         scalar = command.ExecuteScalar();
                     }
+                    catch (OracleException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return scalar;
@@ -69,21 +74,21 @@ namespace Suyeong.Core.DB.Oracle
         {
             object scalar = null;
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                {
+                    try
                     {
-                        scalar = await command.ExecuteScalarAsync();
+                        scalar = await command.ExecuteScalarAsync().ConfigureAwait(false);
+                    }
+                    catch (OracleException)
+                    {
+                        throw;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return scalar;
@@ -91,28 +96,33 @@ namespace Suyeong.Core.DB.Oracle
 
         async public static Task<object> GetDataSingleAsync(string conStr, string query, OracleParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             object scalar = null;
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                {
+                    try
                     {
                         foreach (OracleParameter parameter in parameters)
                         {
                             command.Parameters.Add(parameter);
                         }
 
-                        scalar = await command.ExecuteScalarAsync();
+                        scalar = await command.ExecuteScalarAsync().ConfigureAwait(false);
+                    }
+                    catch (OracleException)
+                    {
+                        throw;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return scalar;
@@ -122,23 +132,23 @@ namespace Suyeong.Core.DB.Oracle
         {
             DataTable table = new DataTable();
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
-                    using (OracleDataAdapter adapter = new OracleDataAdapter())
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleDataAdapter adapter = new OracleDataAdapter())
+                {
+                    try
                     {
                         adapter.SelectCommand = command;
                         adapter.Fill(table);
                     }
+                    catch (OracleException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return table;
@@ -146,16 +156,21 @@ namespace Suyeong.Core.DB.Oracle
 
         public static DataTable GetDataTable(string conStr, string query, OracleParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataTable table = new DataTable();
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
-                    using (OracleDataAdapter adapter = new OracleDataAdapter())
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleDataAdapter adapter = new OracleDataAdapter())
+                {
+                    try
                     {
                         foreach (OracleParameter parameter in parameters)
                         {
@@ -165,42 +180,47 @@ namespace Suyeong.Core.DB.Oracle
                         adapter.SelectCommand = command;
                         adapter.Fill(table);
                     }
+                    catch (OracleException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return table;
         }
 
-        async public static Task<DataTable> GetDataTableAsync(string conStr, string query, OracleParameter[] parameters = null)
+        async public static Task<DataTable> GetDataTableAsync(string conStr, string query)
         {
-            return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query, parameters: parameters));
+            return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query)).ConfigureAwait(false);
+        }
+
+        async public static Task<DataTable> GetDataTableAsync(string conStr, string query, OracleParameter[] parameters)
+        {
+            return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query, parameters: parameters)).ConfigureAwait(false);
         }
 
         public static DataSet GetDataSet(string conStr, string query)
         {
             DataSet dataSet = new DataSet();
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
-                    using (OracleDataAdapter adapter = new OracleDataAdapter())
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleDataAdapter adapter = new OracleDataAdapter())
+                {
+                    try
                     {
                         adapter.SelectCommand = command;
                         adapter.Fill(dataSet);
                     }
+                    catch (OracleException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return dataSet;
@@ -208,16 +228,21 @@ namespace Suyeong.Core.DB.Oracle
 
         public static DataSet GetDataSet(string conStr, string query, OracleParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataSet dataSet = new DataSet();
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
-                    using (OracleDataAdapter adapter = new OracleDataAdapter())
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleDataAdapter adapter = new OracleDataAdapter())
+                {
+                    try
                     {
                         foreach (OracleParameter parameter in parameters)
                         {
@@ -227,62 +252,54 @@ namespace Suyeong.Core.DB.Oracle
                         adapter.SelectCommand = command;
                         adapter.Fill(dataSet);
                     }
+                    catch (OracleException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return dataSet;
         }
 
-        async public static Task<DataSet> GetDataSetAsync(string conStr, string query, OracleParameter[] parameters = null)
+        async public static Task<DataSet> GetDataSetAsync(string conStr, string query)
         {
-            return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query, parameters: parameters));
+            return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query)).ConfigureAwait(false);
+        }
+
+        async public static Task<DataSet> GetDataSetAsync(string conStr, string query, OracleParameter[] parameters)
+        {
+            return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query, parameters: parameters)).ConfigureAwait(false);
         }
 
         public static bool SetQuery(string conStr, string query)
         {
             int result = 0;
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleTransaction transaction = connection.BeginTransaction())
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleTransaction transaction = connection.BeginTransaction())
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                {
+                    try
                     {
                         command.Transaction = transaction;
 
-                        try
-                        {
-                            result = command.ExecuteNonQuery();
+                        result = command.ExecuteNonQuery();
 
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
-                        }
-                        catch (Exception)
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (OracleException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (OracleException)
+                    {
+                        command.Transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;
@@ -290,50 +307,42 @@ namespace Suyeong.Core.DB.Oracle
 
         public static bool SetQuery(string conStr, string query, OracleParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             int result = 0;
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleTransaction transaction = connection.BeginTransaction())
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleTransaction transaction = connection.BeginTransaction())
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                {
+                    try
                     {
                         command.Transaction = transaction;
 
-                        try
+                        foreach (OracleParameter parameter in parameters)
                         {
-                            foreach (OracleParameter parameter in parameters)
-                            {
-                                command.Parameters.Add(parameter);
-                            }
-
-                            result = command.ExecuteNonQuery();
-
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
+                            command.Parameters.Add(parameter);
                         }
-                        catch (Exception)
+
+                        result = command.ExecuteNonQuery();
+
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (OracleException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (OracleException)
+                    {
+                        command.Transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;
@@ -341,52 +350,44 @@ namespace Suyeong.Core.DB.Oracle
 
         public static bool SetQuery(string conStr, string query, OracleParameter[] parameters, int bindCount)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             int result = 0;
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleTransaction transaction = connection.BeginTransaction())
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleTransaction transaction = connection.BeginTransaction())
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                {
+                    try
                     {
                         command.Transaction = transaction;
 
-                        try
+                        foreach (OracleParameter parameter in parameters)
                         {
-                            foreach (OracleParameter parameter in parameters)
-                            {
-                                command.Parameters.Add(parameter);
-                            }
-
-                            command.ArrayBindCount = bindCount;
-
-                            result = command.ExecuteNonQuery();
-
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
+                            command.Parameters.Add(parameter);
                         }
-                        catch (Exception)
+
+                        command.ArrayBindCount = bindCount;
+
+                        result = command.ExecuteNonQuery();
+
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (OracleException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (OracleException)
+                    {
+                        command.Transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;
@@ -405,27 +406,21 @@ namespace Suyeong.Core.DB.Oracle
                     using (OracleTransaction transaction = connection.BeginTransaction())
                     using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
                     {
-                        command.Transaction = transaction;
-
                         try
                         {
-                            result = await command.ExecuteNonQueryAsync();
+                            command.Transaction = transaction;
+
+                            result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
 
                             if (result > 0)
                             {
                                 command.Transaction.Commit();
                             }
                         }
-                        catch (Exception)
+                        catch (OracleException)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (OracleException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Rollback();
+                            throw;
                         }
                     }
                 }
@@ -440,50 +435,42 @@ namespace Suyeong.Core.DB.Oracle
 
         async public static Task<bool> SetQueryAsync(string conStr, string query, OracleParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             int result = 0;
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleTransaction transaction = connection.BeginTransaction())
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleTransaction transaction = connection.BeginTransaction())
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                {
+                    try
                     {
                         command.Transaction = transaction;
 
-                        try
+                        foreach (OracleParameter parameter in parameters)
                         {
-                            foreach (OracleParameter parameter in parameters)
-                            {
-                                command.Parameters.Add(parameter);
-                            }
-
-                            result = await command.ExecuteNonQueryAsync();
-
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
+                            command.Parameters.Add(parameter);
                         }
-                        catch (Exception)
+
+                        result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (OracleException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (OracleException)
+                    {
+                        command.Transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;
@@ -491,52 +478,44 @@ namespace Suyeong.Core.DB.Oracle
 
         async public static Task<bool> SetQueryAsync(string conStr, string query, OracleParameter[] parameters, int bindCount)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             int result = 0;
 
-            try
+            using (OracleConnection connection = new OracleConnection(connectionString: conStr))
             {
-                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (OracleTransaction transaction = connection.BeginTransaction())
-                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                using (OracleTransaction transaction = connection.BeginTransaction())
+                using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
+                {
+                    try
                     {
                         command.Transaction = transaction;
 
-                        try
+                        foreach (OracleParameter parameter in parameters)
                         {
-                            foreach (OracleParameter parameter in parameters)
-                            {
-                                command.Parameters.Add(parameter);
-                            }
-
-                            command.ArrayBindCount = bindCount;
-
-                            result = await command.ExecuteNonQueryAsync();
-
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
+                            command.Parameters.Add(parameter);
                         }
-                        catch (Exception)
+
+                        command.ArrayBindCount = bindCount;
+
+                        result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (OracleException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (OracleException)
+                    {
+                        command.Transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;

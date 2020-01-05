@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -11,6 +12,11 @@ namespace Suyeong.Core.Util
     {
         public static bool ReleaseComObjects(object[] objects)
         {
+            if (objects == null)
+            {
+                throw new NullReferenceException();
+            }
+
             bool result = false;
 
             try
@@ -33,9 +39,14 @@ namespace Suyeong.Core.Util
             return result;
         }
 
-        public static K GetValueFromDictionary<T, K>(Dictionary<T, K> dic, T key)
+        public static TK GetValueFromDictionary<T, TK>(Dictionary<T, TK> dic, T key)
         {
-            K value;
+            if (dic == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            TK value;
 
             if (!dic.TryGetValue(key, out value))
             {
@@ -47,6 +58,11 @@ namespace Suyeong.Core.Util
 
         public static string[] GetColNamesFromDataTable(DataTable table)
         {
+            if (table == null)
+            {
+                throw new NullReferenceException();
+            }
+
             string[] names = new string[table.Columns.Count];
 
             for (int i = 0; i < table.Columns.Count; i++)
@@ -68,7 +84,7 @@ namespace Suyeong.Core.Util
 
         public static string GetFilePathAddNumber(string filePath, int count = 0)
         {
-            string copyPath = count == 0 ? filePath : AddNameToFilePath(filePath, count.ToString());
+            string copyPath = count == 0 ? filePath : AddNameToFilePath(filePath, count.ToString(CultureInfo.InvariantCulture));
             return !File.Exists(copyPath) ? copyPath : GetFilePathAddNumber(filePath, count + 1);
         }
 
@@ -76,15 +92,15 @@ namespace Suyeong.Core.Util
         {
             if (fileSize > Numbers.GIGA_BYTE)
             {
-                return $"{(fileSize / Numbers.GIGA_BYTE).ToString("###.##")} GB";
+                return $"{(fileSize / Numbers.GIGA_BYTE).ToString("###.##", CultureInfo.InvariantCulture)} GB";
             }
             else if (fileSize > Numbers.MEGA_BYTE)
             {
-                return $"{(fileSize / Numbers.MEGA_BYTE).ToString("###.##")} MB";
+                return $"{(fileSize / Numbers.MEGA_BYTE).ToString("###.##", CultureInfo.InvariantCulture)} MB";
             }
             else if (fileSize > Numbers.KILO_BYTE)
             {
-                return $"{(fileSize / Numbers.KILO_BYTE).ToString("###.##")} KB";
+                return $"{(fileSize / Numbers.KILO_BYTE).ToString("###.##", CultureInfo.InvariantCulture)} KB";
             }
             else
             {
@@ -133,7 +149,7 @@ namespace Suyeong.Core.Util
         {
             foreach (Process process in Process.GetProcessesByName(processName))
             {
-                if (string.Equals(process.MainWindowTitle, title))
+                if (string.Equals(process.MainWindowTitle, title, StringComparison.InvariantCulture))
                 {
                     return process;
                 }

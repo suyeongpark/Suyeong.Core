@@ -1,28 +1,16 @@
-﻿using Google.Cloud.Vision.V1;
+﻿using System.Collections.Generic;
+using Google.Cloud.Vision.V1;
 
 namespace Suyeong.Core.GoogleVision.OCR
 {
     public static class GoogleVisionOCR
     {
-        static ImageAnnotatorClient _client;
-        static ImageAnnotatorClient Client
+        public static OcrTextCollection DetectTextByGoogleVision(string imagePath)
         {
-            get
-            {
-                if (_client == null)
-                {
-                    _client = ImageAnnotatorClient.Create();
-                }
+            OcrTextCollection textBlocks = new OcrTextCollection();
 
-                return _client;
-            }
-        }
-
-        public static OcrTexts DetectTextByGoogleVision(string imagePath)
-        {
-            OcrTexts textBlocks = new OcrTexts();
-
-            var response = Client.DetectText(Image.FromFile(imagePath));
+            ImageAnnotatorClient client = ImageAnnotatorClient.Create();
+            IReadOnlyList<EntityAnnotation> response = client.DetectText(Image.FromFile(imagePath));
 
             int minX, maxX, minY, maxY, centerX, centerY, rotate, index = 0;
 

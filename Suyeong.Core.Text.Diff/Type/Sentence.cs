@@ -8,7 +8,7 @@ namespace Suyeong.Core.Text.Diff
         {
             this.Index = index;
             this.Text = text;
-            this.Texts = text.Split(new char[] { ' ' });
+            this.Texts = text?.Split(new char[] { ' ' });
         }
 
         public int Index { get; private set; }
@@ -16,14 +16,14 @@ namespace Suyeong.Core.Text.Diff
         public string[] Texts { get; private set; }
     }
 
-    public class Sentences : List<Sentence>
+    public class SentenceCollection : List<Sentence>
     {
-        public Sentences()
+        public SentenceCollection()
         {
 
         }
 
-        public Sentences(IEnumerable<Sentence> sentences) : base()
+        public SentenceCollection(IEnumerable<Sentence> sentences) : base()
         {
             this.AddRange(sentences);
         }

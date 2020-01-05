@@ -19,6 +19,8 @@ namespace Suyeong.Core.Net.Udp
             this.iv = iv;
         }
 
+        public IPEndPoint ServerEndPoint { get { return this.serverEndPoint; } }
+
         async public Task<IPacket> Send(IPacket sendPacket)
         {
             IPacket receivePacket = default;
@@ -31,20 +33,20 @@ namespace Suyeong.Core.Net.Udp
                 {
                     // 1. 보낼 데이터를 암호화한다.
                     byte[] sendData = NetUtil.SerializeObject(data: sendPacket);
-                    byte[] encryptData = await NetUtil.EncryptAsync(data: sendData, key: this.key, iv: this.iv);
+                    byte[] encryptData = await NetUtil.EncryptAsync(data: sendData, key: this.key, iv: this.iv).ConfigureAwait(false);
 
                     // 2. 보낸다.
-                    await client.SendAsync(datagram: encryptData, bytes: encryptData.Length, endPoint: this.serverEndPoint);
+                    await client.SendAsync(datagram: encryptData, bytes: encryptData.Length, endPoint: this.serverEndPoint).ConfigureAwait(false);
 
                     // 3. 결과의 데이터를 받는다.
-                    UdpReceiveResult result = await client.ReceiveAsync();
+                    UdpReceiveResult result = await client.ReceiveAsync().ConfigureAwait(false);
 
                     // 4. 결과는 암호화되어 있으므로 푼다.
-                    byte[] decryptData = await NetUtil.DecryptAsync(data: result.Buffer, key: this.key, iv: this.iv);
+                    byte[] decryptData = await NetUtil.DecryptAsync(data: result.Buffer, key: this.key, iv: this.iv).ConfigureAwait(false);
                     receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
                 }
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
                 Console.WriteLine(ex);
             }
@@ -53,9 +55,9 @@ namespace Suyeong.Core.Net.Udp
         }
     }
 
-    public class UdpClientSimpleCryptAsyncs : List<UdpClientSimpleCryptAsync>
+    public class UdpClientSimpleCryptAsyncCollection : List<UdpClientSimpleCryptAsync>
     {
-        public UdpClientSimpleCryptAsyncs()
+        public UdpClientSimpleCryptAsyncCollection()
         {
 
         }

@@ -48,14 +48,14 @@ namespace Suyeong.Core.GoogleVision.OCR
         }
     }
 
-    public class OcrTexts : List<OcrText>
+    public class OcrTextCollection : List<OcrText>
     {
-        public OcrTexts()
+        public OcrTextCollection()
         {
 
         }
 
-        public OcrTexts(IEnumerable<OcrText> ocrTexts) : base()
+        public OcrTextCollection(IEnumerable<OcrText> ocrTexts) : base()
         {
             this.AddRange(ocrTexts);
         }

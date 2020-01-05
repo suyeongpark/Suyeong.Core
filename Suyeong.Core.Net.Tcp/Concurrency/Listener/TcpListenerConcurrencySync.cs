@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using Suyeong.Core.Net.Lib;
 
 namespace Suyeong.Core.Net.Tcp
@@ -9,9 +10,10 @@ namespace Suyeong.Core.Net.Tcp
     public class TcpListenerConcurrencySync : IDisposable
     {
         TcpListener listener;
-        TcpClientHandlerConcurrencySyncDicGroup handlerDicGroup;
+        TcpClientHandlerConcurrencySyncGroupDictionary handlerDicGroup;
         Func<string, string, IPacket> userEnter, userExit;
         Func<IPacket, IPacket> response;
+        bool disposedValue;  // 중복호출 제거용
 
         /// <summary>
         /// userEnter, userExit은 사용자의 입장과 퇴장에 대한 callback으로써 StageID, UserID를 받고 IPacket을 반환한다.
@@ -27,18 +29,45 @@ namespace Suyeong.Core.Net.Tcp
             this.response = responseCallbak;
 
             this.listener = new TcpListener(new IPEndPoint(address: IPAddress.Any, port: portNum));
-            this.handlerDicGroup = new TcpClientHandlerConcurrencySyncDicGroup();
+            this.handlerDicGroup = new TcpClientHandlerConcurrencySyncGroupDictionary();
+            this.disposedValue = false;
+        }
+
+        // TODO: 아래의 Dispose(bool disposing)에 관리되지 않는 리소스를 해제하는 코드가 포함되어 있는 경우에만 종료자를 재정의합니다. 
+        ~TcpListenerConcurrencySync()
+        {
+            Dispose(false);
         }
 
         public void Dispose()
         {
-            this.listener.Stop();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposedValue)
+            {
+                // TODO: 관리되는 상태(관리되는 개체)를 삭제
+                if (disposing)
+                {
+                    this.listener.Stop();
+                }
+
+                // TODO: 관리되지 않는 리소스(관리되지 않는 개체)를 해제
+
+                // TODO: 큰 필드를 null로 설정.
+
+                this.disposedValue = true;
+            }
         }
 
         public void Start()
         {
             this.listener.Start();
 
+            Thread thread;
             TcpClient client;
             NetworkStream stream;
             TcpClientHandlerConcurrencySync handler;
@@ -83,7 +112,9 @@ namespace Suyeong.Core.Net.Tcp
                     AddStage(handler: handler, stageID: stageID, userID: userID);
 
                     // hander를 시작한다.
-                    handler.Start();
+                    thread = new Thread(handler.Start);
+                    thread.IsBackground = true;
+                    thread.Start();
 
                     // 사용자가 입장한 정보를 broadcast 한다.
                     IPacket sendPacket = this.userEnter(stageID, userID);
@@ -93,16 +124,12 @@ namespace Suyeong.Core.Net.Tcp
                 {
                     Console.WriteLine(ex);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
             }
         }
 
         public void Disconnect(string stageID, string userID)
         {
-            TcpClientHandlerConcurrencySyncDic handlerDic;
+            TcpClientHandlerConcurrencySyncDictionary handlerDic;
             TcpClientHandlerConcurrencySync handler;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
@@ -139,7 +166,7 @@ namespace Suyeong.Core.Net.Tcp
 
         public void BroadcastToServer(IPacket sendPacket)
         {
-            foreach (KeyValuePair<string, TcpClientHandlerConcurrencySyncDic> kvp in this.handlerDicGroup)
+            foreach (KeyValuePair<string, TcpClientHandlerConcurrencySyncDictionary> kvp in this.handlerDicGroup)
             {
                 foreach (KeyValuePair<string, TcpClientHandlerConcurrencySync> kvp2 in kvp.Value)
                 {
@@ -150,7 +177,7 @@ namespace Suyeong.Core.Net.Tcp
 
         void AddStage(TcpClientHandlerConcurrencySync handler, string stageID, string userID)
         {
-            TcpClientHandlerConcurrencySyncDic handlerDic;
+            TcpClientHandlerConcurrencySyncDictionary handlerDic;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
             {
@@ -160,7 +187,7 @@ namespace Suyeong.Core.Net.Tcp
             }
             else
             {
-                handlerDic = new TcpClientHandlerConcurrencySyncDic();
+                handlerDic = new TcpClientHandlerConcurrencySyncDictionary();
                 handlerDic.Add(userID, handler);
 
                 this.handlerDicGroup.Add(stageID, handlerDic);
@@ -169,7 +196,7 @@ namespace Suyeong.Core.Net.Tcp
 
         TcpClientHandlerConcurrencySync RemoveStage(string stageID, string userID)
         {
-            TcpClientHandlerConcurrencySyncDic handlerDic;
+            TcpClientHandlerConcurrencySyncDictionary handlerDic;
             TcpClientHandlerConcurrencySync handler;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
@@ -201,7 +228,7 @@ namespace Suyeong.Core.Net.Tcp
 
         void BroadcastToStage(string stageID, IPacket sendPacket)
         {
-            TcpClientHandlerConcurrencySyncDic handlerDic;
+            TcpClientHandlerConcurrencySyncDictionary handlerDic;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
             {
@@ -213,9 +240,9 @@ namespace Suyeong.Core.Net.Tcp
         }
     }
 
-    public class TcpListenerConcurrencySyncs : List<TcpListenerConcurrencySync>
+    public class TcpListenerConcurrencySyncCollection : List<TcpListenerConcurrencySync>
     {
-        public TcpListenerConcurrencySyncs()
+        public TcpListenerConcurrencySyncCollection()
         {
 
         }

@@ -7,13 +7,13 @@ namespace Suyeong.Core.Net.Ftp
 {
     public static class FtpStream
     {
-        public static byte[] FtpDownload(string ftpPath, string user, string password)
+        public static byte[] FtpDownload(Uri requestUri, string user, string password)
         {
             byte[] result = null;
 
             try
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUriString: ftpPath);
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUri: requestUri);
                 request.Method = WebRequestMethods.Ftp.DownloadFile;
                 request.Credentials = new NetworkCredential(userName: user, password: password);
 
@@ -33,13 +33,13 @@ namespace Suyeong.Core.Net.Ftp
             return result;
         }
 
-        async public static Task<byte[]> FtpDownloadAsync(string ftpPath, string user, string password)
+        async public static Task<byte[]> FtpDownloadAsync(Uri requestUri, string user, string password)
         {
             byte[] result = null;
 
             try
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUriString: ftpPath);
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUri: requestUri);
                 request.Method = WebRequestMethods.Ftp.DownloadFile;
                 request.Credentials = new NetworkCredential(userName: user, password: password);
 
@@ -47,7 +47,7 @@ namespace Suyeong.Core.Net.Ftp
                 using (Stream stream = response.GetResponseStream())
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    await stream.CopyToAsync(memoryStream);
+                    await stream.CopyToAsync(memoryStream).ConfigureAwait(false);
                     result = memoryStream.ToArray();
                 }
             }
@@ -59,13 +59,18 @@ namespace Suyeong.Core.Net.Ftp
             return result;
         }
 
-        public static string FtpUpload(byte[] data, string ftpPath, string user, string password)
+        public static string FtpUpload(byte[] data, Uri requestUri, string user, string password)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             string result = string.Empty;
 
             try
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUriString: ftpPath);
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUri: requestUri);
                 request.Method = WebRequestMethods.Ftp.UploadFile;
                 request.Credentials = new NetworkCredential(userName: user, password: password);
                 request.ContentLength = data.Length;
@@ -88,20 +93,25 @@ namespace Suyeong.Core.Net.Ftp
             return result;
         }
 
-        async public static Task<string> FtpUploadAsync(byte[] data, string ftpPath, string user, string password)
+        async public static Task<string> FtpUploadAsync(byte[] data, Uri requestUri, string user, string password)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             string result = string.Empty;
 
             try
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUriString: ftpPath);
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUri: requestUri);
                 request.Method = WebRequestMethods.Ftp.UploadFile;
                 request.Credentials = new NetworkCredential(userName: user, password: password);
                 request.ContentLength = data.Length;
 
-                using (Stream stream = await request.GetRequestStreamAsync())
+                using (Stream stream = await request.GetRequestStreamAsync().ConfigureAwait(false))
                 {
-                    await stream.WriteAsync(buffer: data, offset: 0, count: data.Length);
+                    await stream.WriteAsync(buffer: data, offset: 0, count: data.Length).ConfigureAwait(false);
 
                     using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
                     {

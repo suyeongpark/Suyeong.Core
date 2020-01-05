@@ -47,11 +47,35 @@ namespace Suyeong.Core.Util
             return num;
         }
 
+        public static uint StringToUint(string str)
+        {
+            uint num = 0;
+
+            if (!uint.TryParse(str, out num))
+            {
+                // error!
+            }
+
+            return num;
+        }
+
         public static long StringToLong(string str)
         {
             long num = -1;
 
             if (!long.TryParse(str, out num))
+            {
+                // error!
+            }
+
+            return num;
+        }
+
+        public static ulong StringToUlong(string str)
+        {
+            ulong num = 0;
+
+            if (!ulong.TryParse(str, out num))
             {
                 // error!
             }
@@ -119,36 +143,71 @@ namespace Suyeong.Core.Util
 
         public static string DataSetToCsv(DataSet dataSet)
         {
+            if (dataSet == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return DataSetToSeparateValue(dataSet: dataSet, separate: ",");
         }
 
         public static string DataSetToTsv(DataSet dataSet)
         {
+            if (dataSet == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return DataSetToSeparateValue(dataSet: dataSet, separate: "\t");
         }
 
-        public static string DataTableToCsv(DataTable dataTable)
+        public static string DataTableToCsv(DataTable table)
         {
-            return DataTableToSeparateValue(dataTable: dataTable, separate: ",");
+            if (table == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            return DataTableToSeparateValue(table: table, separate: ",");
         }
 
-        public static string DataTableToTsv(DataTable dataTable)
+        public static string DataTableToTsv(DataTable table)
         {
-            return DataTableToSeparateValue(dataTable: dataTable, separate: "\t");
+            if (table == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            return DataTableToSeparateValue(table: table, separate: "\t");
         }
 
         public static string ListToCsv<T>(IEnumerable<T> dataList)
         {
+            if (dataList == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return ListToSeparateValue(list: dataList, separate: ",");
         }
 
         public static string ListToTsv<T>(IEnumerable<T> dataList)
         {
+            if (dataList == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return ListToSeparateValue(list: dataList, separate: "\t");
         }
 
         public static DataTable ListToDataTable<T>(IEnumerable<T> list)
         {
+            if (list == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataTable table = new DataTable();
 
             FieldInfo[] fieldInfos = typeof(T).GetFields();
@@ -176,6 +235,11 @@ namespace Suyeong.Core.Util
 
         public static DataTable ListToDataTableFieldOnly<T>(IEnumerable<T> list)
         {
+            if (list == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataTable table = new DataTable();
 
             FieldInfo[] fieldInfos = typeof(T).GetFields();
@@ -197,6 +261,11 @@ namespace Suyeong.Core.Util
 
         public static DataTable ListToDataTablePropertyOnly<T>(IEnumerable<T> list)
         {
+            if (list == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataTable table = new DataTable();
 
             PropertyInfo[] propertyInfos = typeof(T).GetProperties();
@@ -273,7 +342,7 @@ namespace Suyeong.Core.Util
 
             foreach (DataTable table in dataSet.Tables)
             {
-                sb.AppendLine(DataTableToSeparateValue(dataTable: table, separate: separate));
+                sb.AppendLine(DataTableToSeparateValue(table: table, separate: separate));
                 sb.AppendLine("");  // table 사이를 구분하기 위한 공백
             }
 
@@ -281,18 +350,18 @@ namespace Suyeong.Core.Util
         }
 
 
-        static string DataTableToSeparateValue(DataTable dataTable, string separate)
+        static string DataTableToSeparateValue(DataTable table, string separate)
         {
             StringBuilder sb = new StringBuilder();
 
-            string title = string.Join(separate, Utils.GetColNamesFromDataTable(table: dataTable));
+            string title = string.Join(separate, Utils.GetColNamesFromDataTable(table: table));
 
             if (!string.IsNullOrWhiteSpace(title))
             {
                 sb.AppendLine(title);
             }
 
-            foreach (DataRow row in dataTable.Rows)
+            foreach (DataRow row in table.Rows)
             {
                 sb.AppendLine(string.Join(separate, row.ItemArray));
             }

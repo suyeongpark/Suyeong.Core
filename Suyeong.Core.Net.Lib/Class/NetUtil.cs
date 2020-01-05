@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Compression;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
@@ -21,6 +22,11 @@ namespace Suyeong.Core.Net.Lib
 
         public static object DeserializeObject(byte[] data)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 memoryStream.Write(data, 0, data.Length);
@@ -33,6 +39,11 @@ namespace Suyeong.Core.Net.Lib
 
         public static byte[] Compress(byte[] data)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             MemoryStream outputStream = new MemoryStream();
 
             using (DeflateStream deflateStream = new DeflateStream(outputStream, CompressionMode.Compress))
@@ -45,6 +56,11 @@ namespace Suyeong.Core.Net.Lib
 
         public static byte[] Decompress(byte[] data)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             using (MemoryStream outputStream = new MemoryStream())
             using (MemoryStream inputStream = new MemoryStream(data))
             using (DeflateStream deflateStream = new DeflateStream(inputStream, CompressionMode.Decompress))
@@ -56,11 +72,16 @@ namespace Suyeong.Core.Net.Lib
 
         async public static Task<byte[]> CompressAsync(byte[] data)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             MemoryStream outputStream = new MemoryStream();
 
             using (DeflateStream deflateStream = new DeflateStream(outputStream, CompressionMode.Compress))
             {
-                await deflateStream.WriteAsync(data, 0, data.Length);
+                await deflateStream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
             }
 
             return outputStream.ToArray();
@@ -68,17 +89,27 @@ namespace Suyeong.Core.Net.Lib
 
         async public static Task<byte[]> DecompressAsync(byte[] data)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             using (MemoryStream outputStream = new MemoryStream())
             using (MemoryStream inputStream = new MemoryStream(data))
             using (DeflateStream deflateStream = new DeflateStream(inputStream, CompressionMode.Decompress))
             {
-                await deflateStream.CopyToAsync(outputStream);
+                await deflateStream.CopyToAsync(outputStream).ConfigureAwait(false);
                 return outputStream.ToArray();
             }
         }
 
         public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             MemoryStream memoryStream = new MemoryStream();
 
             using (Aes algorithm = Aes.Create())
@@ -93,6 +124,11 @@ namespace Suyeong.Core.Net.Lib
 
         public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             using (MemoryStream outputStream = new MemoryStream())
             using (MemoryStream inputStream = new MemoryStream(data))
             using (Aes algorithm = Aes.Create())
@@ -106,13 +142,18 @@ namespace Suyeong.Core.Net.Lib
 
         async public static Task<byte[]> EncryptAsync(byte[] data, byte[] key, byte[] iv)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             MemoryStream memoryStream = new MemoryStream();
 
             using (Aes algorithm = Aes.Create())
             using (ICryptoTransform encryptor = algorithm.CreateEncryptor(key, iv))
             using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
             {
-                await cryptoStream.WriteAsync(data, 0, data.Length);
+                await cryptoStream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
             }
 
             return memoryStream.ToArray();
@@ -120,19 +161,29 @@ namespace Suyeong.Core.Net.Lib
 
         async public static Task<byte[]> DecryptAsync(byte[] data, byte[] key, byte[] iv)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             using (MemoryStream outputStream = new MemoryStream())
             using (MemoryStream inputStream = new MemoryStream(data))
             using (Aes algorithm = Aes.Create())
             using (ICryptoTransform decryptor = algorithm.CreateDecryptor(key, iv))
             using (CryptoStream cryptoStream = new CryptoStream(inputStream, decryptor, CryptoStreamMode.Read))
             {
-                await cryptoStream.CopyToAsync(outputStream);
+                await cryptoStream.CopyToAsync(outputStream).ConfigureAwait(false);
                 return outputStream.ToArray();
             }
         }
 
         public static byte[] EncryptWithCompress(byte[] data, byte[] key, byte[] iv)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             MemoryStream memoryStream = new MemoryStream();
 
             using (Aes algorithm = Aes.Create())
@@ -148,6 +199,11 @@ namespace Suyeong.Core.Net.Lib
 
         public static byte[] DecryptWithDecompress(byte[] data, byte[] key, byte[] iv)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             using (MemoryStream outputStream = new MemoryStream())
             using (MemoryStream inputStream = new MemoryStream(data))
             using (Aes algorithm = Aes.Create())
@@ -162,6 +218,11 @@ namespace Suyeong.Core.Net.Lib
 
         async public static Task<byte[]> EncryptWithCompressAsync(byte[] data, byte[] key, byte[] iv)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             MemoryStream memoryStream = new MemoryStream();
 
             using (Aes algorithm = Aes.Create())
@@ -169,7 +230,7 @@ namespace Suyeong.Core.Net.Lib
             using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
             using (DeflateStream deflateStream = new DeflateStream(cryptoStream, CompressionMode.Compress))
             {
-                await deflateStream.WriteAsync(data, 0, data.Length);
+                await deflateStream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
             }
 
             return memoryStream.ToArray();
@@ -177,6 +238,11 @@ namespace Suyeong.Core.Net.Lib
 
         async public static Task<byte[]> DecryptWithDecompressAsync(byte[] data, byte[] key, byte[] iv)
         {
+            if (data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             using (MemoryStream outputStream = new MemoryStream())
             using (MemoryStream inputStream = new MemoryStream(data))
             using (Aes algorithm = Aes.Create())
@@ -184,7 +250,7 @@ namespace Suyeong.Core.Net.Lib
             using (CryptoStream cryptoStream = new CryptoStream(inputStream, decryptor, CryptoStreamMode.Read))
             using (DeflateStream deflateStream = new DeflateStream(cryptoStream, CompressionMode.Decompress))
             {
-                await deflateStream.CopyToAsync(outputStream);
+                await deflateStream.CopyToAsync(outputStream).ConfigureAwait(false);
                 return outputStream.ToArray();
             }
         }

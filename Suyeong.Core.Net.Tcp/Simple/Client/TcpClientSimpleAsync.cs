@@ -18,6 +18,8 @@ namespace Suyeong.Core.Net.Tcp
             this.serverPort = serverPort;
         }
 
+        public IPEndPoint ServerEndPoint { get { return new IPEndPoint(address: IPAddress.Parse(this.serverIP), port: this.serverPort); } }
+
         async public Task<IPacket> Send(IPacket sendPacket)
         {
             IPacket receivePacket = default;
@@ -29,34 +31,34 @@ namespace Suyeong.Core.Net.Tcp
                 {
                     // 1. 보낼 데이터를 압축한다.
                     byte[] sendData = NetUtil.SerializeObject(data: sendPacket);
-                    byte[] compressData = await NetUtil.CompressAsync(data: sendData);
+                    byte[] compressData = await NetUtil.CompressAsync(data: sendData).ConfigureAwait(false);
 
                     // 2. 요청의 헤더를 보낸다.
                     int sendDataLength = compressData.Length;
                     byte[] sendHeader = BitConverter.GetBytes(value: sendDataLength);
-                    await stream.WriteAsync(buffer: sendHeader, offset: 0, count: sendHeader.Length);
+                    await stream.WriteAsync(buffer: sendHeader, offset: 0, count: sendHeader.Length).ConfigureAwait(false);
 
                     // 3. 요청을 보낸다.
-                    await TcpUtil.SendDataAsync(networkStream: stream, data: compressData, dataLength: sendDataLength);
+                    await TcpUtil.SendDataAsync(networkStream: stream, data: compressData, dataLength: sendDataLength).ConfigureAwait(false);
 
-                    await stream.FlushAsync();
+                    await stream.FlushAsync().ConfigureAwait(false);
 
                     // 4. 결과의 헤더를 받는다.
                     byte[] receiveHeader = new byte[Consts.SIZE_HEADER];
-                    int nbytes = await stream.ReadAsync(buffer: receiveHeader, offset: 0, count: receiveHeader.Length);
+                    int nbytes = await stream.ReadAsync(buffer: receiveHeader, offset: 0, count: receiveHeader.Length).ConfigureAwait(false);
 
                     // 5. 결과의 데이터를 받는다.
                     int receiveDataLength = BitConverter.ToInt32(value: receiveHeader, startIndex: 0);
-                    byte[] receiveData = await TcpUtil.ReceiveDataAsync(networkStream: stream, dataLength: receiveDataLength);
+                    byte[] receiveData = await TcpUtil.ReceiveDataAsync(networkStream: stream, dataLength: receiveDataLength).ConfigureAwait(false);
 
-                    await stream.FlushAsync();
+                    await stream.FlushAsync().ConfigureAwait(false);
 
                     // 6. 결과는 압축되어 있으므로 푼다.
-                    byte[] decompressData = await NetUtil.DecompressAsync(data: receiveData);
+                    byte[] decompressData = await NetUtil.DecompressAsync(data: receiveData).ConfigureAwait(false);
                     receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
                 }
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
                 Console.WriteLine(ex);
             }
@@ -65,9 +67,9 @@ namespace Suyeong.Core.Net.Tcp
         }
     }
 
-    public class TcpClientSimpleAsyncs : List<TcpClientSimpleAsync>
+    public class TcpClientSimpleAsyncCollection : List<TcpClientSimpleAsync>
     {
-        public TcpClientSimpleAsyncs()
+        public TcpClientSimpleAsyncCollection()
         {
 
         }

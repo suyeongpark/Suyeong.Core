@@ -7,9 +7,11 @@ namespace Suyeong.Core.GoogleVision.Translate
     {
         public static string GetTranslate(string text, Language targetLanguage)
         {
-            TranslationClient client = TranslationClient.Create();
-            TranslationResult response = client.TranslateText(text, LanguageDic[targetLanguage]);
-            return response.TranslatedText;
+            using (TranslationClient client = TranslationClient.Create())
+            {
+                TranslationResult response = client.TranslateText(text, LanguageDic[targetLanguage]);
+                return response.TranslatedText;
+            }
         }
 
         static Dictionary<Language, string> _languageDic;

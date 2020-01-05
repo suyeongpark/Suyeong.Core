@@ -17,6 +17,8 @@ namespace Suyeong.Core.Net.Tcp
             this.serverPort = serverPort;
         }
 
+        public IPEndPoint ServerEndPoint { get { return new IPEndPoint(address: IPAddress.Parse(this.serverIP), port: this.serverPort); } }
+
         public IPacket Send(IPacket sendPacket)
         {
             IPacket receivePacket = default;
@@ -55,7 +57,7 @@ namespace Suyeong.Core.Net.Tcp
                     receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
                 }
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
                 Console.WriteLine(ex);
             }
@@ -64,9 +66,9 @@ namespace Suyeong.Core.Net.Tcp
         }
     }
 
-    public class TcpClientSimpleSyncs : List<TcpClientSimpleSync>
+    public class TcpClientSimpleSyncCollection : List<TcpClientSimpleSync>
     {
-        public TcpClientSimpleSyncs()
+        public TcpClientSimpleSyncCollection()
         {
 
         }

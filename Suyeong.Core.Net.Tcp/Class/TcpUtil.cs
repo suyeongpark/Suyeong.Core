@@ -9,6 +9,11 @@ namespace Suyeong.Core.Net.Tcp
     {
         public static bool SendData(NetworkStream networkStream, byte[] data, int dataLength)
         {
+            if (networkStream == null || data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             bool result = false;
 
             try
@@ -39,6 +44,11 @@ namespace Suyeong.Core.Net.Tcp
 
         async public static Task<bool> SendDataAsync(NetworkStream networkStream, byte[] data, int dataLength)
         {
+            if (networkStream == null || data == null)
+            {
+                throw new NullReferenceException();
+            }
+
             bool result = false;
 
             try
@@ -69,6 +79,11 @@ namespace Suyeong.Core.Net.Tcp
 
         public static byte[] ReceiveData(NetworkStream networkStream, int dataLength)
         {
+            if (networkStream == null)
+            {
+                throw new NullReferenceException();
+            }
+
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 byte[] buffer;
@@ -88,6 +103,11 @@ namespace Suyeong.Core.Net.Tcp
 
         async public static Task<byte[]> ReceiveDataAsync(NetworkStream networkStream, int dataLength)
         {
+            if (networkStream == null)
+            {
+                throw new NullReferenceException();
+            }
+
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 byte[] buffer;

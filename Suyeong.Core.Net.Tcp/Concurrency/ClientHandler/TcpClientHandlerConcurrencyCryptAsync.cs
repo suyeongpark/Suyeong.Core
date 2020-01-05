@@ -14,6 +14,7 @@ namespace Suyeong.Core.Net.Tcp
         TcpClient client;
         string stageID, userID;
         byte[] key, iv;
+        bool disposedValue;  // 중복호출 제거용
 
         public TcpClientHandlerConcurrencyCryptAsync(TcpClient client, string stageID, string userID, byte[] key, byte[] iv)
         {
@@ -22,19 +23,45 @@ namespace Suyeong.Core.Net.Tcp
             this.userID = userID;
             this.key = key;
             this.iv = iv;
+            this.disposedValue = false;
+        }
+
+        // TODO: 아래의 Dispose(bool disposing)에 관리되지 않는 리소스를 해제하는 코드가 포함되어 있는 경우에만 종료자를 재정의합니다. 
+        ~TcpClientHandlerConcurrencyCryptAsync()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposedValue)
+            {
+                // TODO: 관리되는 상태(관리되는 개체)를 삭제
+                if (disposing)
+                {
+                    if (this.client.Connected)
+                    {
+                        this.client.Close();
+                    }
+                }
+
+                // TODO: 관리되지 않는 리소스(관리되지 않는 개체)를 해제
+
+                // TODO: 큰 필드를 null로 설정.
+
+                this.disposedValue = true;
+            }
         }
 
         public bool Connected { get { return this.client.Connected; } }
 
-        public void Dispose()
-        {
-            if (this.client.Connected)
-            {
-                this.client.Close();
-            }
-        }
-
-        public void SetStageID (string stageID)
+        public void SetStageID(string stageID)
         {
             this.stageID = stageID;
         }
@@ -46,42 +73,34 @@ namespace Suyeong.Core.Net.Tcp
             byte[] receiveHeader, receiveData, decryptData;
             int nbytes, receiveDataLength;
 
-            // 클라이언트에서 오는 메세지를 듣기 위해 별도의 쓰레드를 돌린다.
-            await Task.Factory.StartNew(async () =>
+            while (this.client.Connected)
             {
-                while (this.client.Connected)
+                try
                 {
-                    try
-                    {
-                        stream = this.client.GetStream();
+                    stream = this.client.GetStream();
 
-                        // 1. 결과의 헤더를 받는다.
-                        receiveHeader = new byte[Consts.SIZE_HEADER];
-                        nbytes = await stream.ReadAsync(buffer: receiveHeader, offset: 0, count: receiveHeader.Length);
+                    // 1. 결과의 헤더를 받는다.
+                    receiveHeader = new byte[Consts.SIZE_HEADER];
+                    nbytes = await stream.ReadAsync(buffer: receiveHeader, offset: 0, count: receiveHeader.Length).ConfigureAwait(false);
 
-                        // 2. 결과의 데이터를 받는다.
-                        receiveDataLength = BitConverter.ToInt32(value: receiveHeader, startIndex: 0);
-                        receiveData = await TcpUtil.ReceiveDataAsync(networkStream: stream, dataLength: receiveDataLength);
+                    // 2. 결과의 데이터를 받는다.
+                    receiveDataLength = BitConverter.ToInt32(value: receiveHeader, startIndex: 0);
+                    receiveData = await TcpUtil.ReceiveDataAsync(networkStream: stream, dataLength: receiveDataLength).ConfigureAwait(false);
 
-                        await stream.FlushAsync();
+                    await stream.FlushAsync().ConfigureAwait(false);
 
-                        // 3. 결과는 암호화되어 있으므로 푼다.
-                        decryptData = await NetUtil.DecryptAsync(data: receiveData, key: this.key, iv: this.iv);
-                        received = NetUtil.DeserializeObject(data: decryptData) as IPacket;
+                    // 3. 결과는 암호화되어 있으므로 푼다.
+                    decryptData = await NetUtil.DecryptAsync(data: receiveData, key: this.key, iv: this.iv).ConfigureAwait(false);
+                    received = NetUtil.DeserializeObject(data: decryptData) as IPacket;
 
-                        await Receive(this.stageID, received);
-                    }
-                    catch (SocketException)
-                    {
-                        await Disconnect(this.stageID, this.userID);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
-                        await Disconnect(this.stageID, this.userID);
-                    }
+                    await Receive(this.stageID, received).ConfigureAwait(false);
                 }
-            });
+                catch (SocketException ex)
+                {
+                    Console.WriteLine(ex);
+                    await Disconnect(this.stageID, this.userID).ConfigureAwait(false);
+                }
+            }
         }
 
         async public Task SendAsync(IPacket packet)
@@ -92,36 +111,36 @@ namespace Suyeong.Core.Net.Tcp
 
                 // 1. 보낼 데이터를 암호화한다.
                 byte[] sendData = NetUtil.SerializeObject(data: packet);
-                byte[] encryptData = await NetUtil.EncryptAsync(data: sendData, key: this.key, iv: this.iv);
+                byte[] encryptData = await NetUtil.EncryptAsync(data: sendData, key: this.key, iv: this.iv).ConfigureAwait(false);
 
                 // 2. 요청의 헤더를 보낸다.
                 int sendDataLength = encryptData.Length;
                 byte[] sendHeader = BitConverter.GetBytes(value: sendDataLength);
-                await stream.WriteAsync(buffer: sendHeader, offset: 0, count: sendHeader.Length);
+                await stream.WriteAsync(buffer: sendHeader, offset: 0, count: sendHeader.Length).ConfigureAwait(false);
 
                 // 3. 요청을 보낸다.
-                await TcpUtil.SendDataAsync(networkStream: stream, data: encryptData, dataLength: sendDataLength);
+                await TcpUtil.SendDataAsync(networkStream: stream, data: encryptData, dataLength: sendDataLength).ConfigureAwait(false);
 
-                await stream.FlushAsync();
+                await stream.FlushAsync().ConfigureAwait(false);
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
                 Console.WriteLine(ex);
             }
         }
     }
 
-    public class TcpClientHandlerConcurrencyCryptAsyncDic : Dictionary<string, TcpClientHandlerConcurrencyCryptAsync>
+    public class TcpClientHandlerConcurrencyCryptAsyncDictionary : Dictionary<string, TcpClientHandlerConcurrencyCryptAsync>
     {
-        public TcpClientHandlerConcurrencyCryptAsyncDic()
+        public TcpClientHandlerConcurrencyCryptAsyncDictionary()
         {
 
         }
     }
 
-    public class TcpClientHandlerConcurrencyCryptAsyncDicGroup : Dictionary<string, TcpClientHandlerConcurrencyCryptAsyncDic>
+    public class TcpClientHandlerConcurrencyCryptAsyncGroupDictionary : Dictionary<string, TcpClientHandlerConcurrencyCryptAsyncDictionary>
     {
-        public TcpClientHandlerConcurrencyCryptAsyncDicGroup()
+        public TcpClientHandlerConcurrencyCryptAsyncGroupDictionary()
         {
 
         }

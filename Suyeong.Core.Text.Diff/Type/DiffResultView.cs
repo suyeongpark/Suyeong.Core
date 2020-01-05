@@ -16,13 +16,13 @@ namespace Suyeong.Core.Text.Diff
         public DiffResult IndexSub { get; private set; }
     }
 
-    public class DiffResultViews : List<DiffResultView>
+    public class DiffResultViewCollection : List<DiffResultView>
     {
-        public DiffResultViews()
+        public DiffResultViewCollection()
         {
         }
 
-        public DiffResultViews(IEnumerable<DiffResultView> diffResultViews) : base()
+        public DiffResultViewCollection(IEnumerable<DiffResultView> diffResultViews) : base()
         {
             this.AddRange(diffResultViews);
         }
