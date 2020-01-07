@@ -7,6 +7,13 @@ using Suyeong.Core.Net.Lib;
 
 namespace Suyeong.Core.Net.Tcp
 {
+    /// <summary>
+    /// 이건 좀 설계가 잘못됐다.
+    /// 이 서버는 순수하게 방 안에 있는 사용자들의 동시 작업만 해야지. 
+    /// 얘가 방을 관리하는 것은 아니다.
+    /// 방을 관리하는 서버는 별도로 있는게 맞다.
+    /// </summary>
+
     public class TcpListenerConcurrencyAsync : IDisposable
     {
         TcpListener listener;

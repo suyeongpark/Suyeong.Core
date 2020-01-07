@@ -3,29 +3,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.Net.Lib", "Suyeong.Core.Net.Lib\Suyeong.Core.Net.Lib.csproj", "{F4CC0E39-5C12-413F-BFB2-D71C61B341F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.Net.Lib", "Suyeong.Core.Net.Lib\Suyeong.Core.Net.Lib.csproj", "{F4CC0E39-5C12-413F-BFB2-D71C61B341F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.Net.Tcp", "Suyeong.Core.Net.Tcp\Suyeong.Core.Net.Tcp.csproj", "{37FBD9CB-20C5-4301-B8CE-F0B32BDAF16F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.Net.Tcp", "Suyeong.Core.Net.Tcp\Suyeong.Core.Net.Tcp.csproj", "{37FBD9CB-20C5-4301-B8CE-F0B32BDAF16F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.Net.Udp", "Suyeong.Core.Net.Udp\Suyeong.Core.Net.Udp.csproj", "{F8F4D054-A2B2-477C-840C-5AA50A9E30E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.Net.Udp", "Suyeong.Core.Net.Udp\Suyeong.Core.Net.Udp.csproj", "{F8F4D054-A2B2-477C-840C-5AA50A9E30E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.Util", "Suyeong.Core.Util\Suyeong.Core.Util.csproj", "{2C07A544-1BB0-460D-B4A5-534F663577B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.Util", "Suyeong.Core.Util\Suyeong.Core.Util.csproj", "{2C07A544-1BB0-460D-B4A5-534F663577B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.Text.Diff", "Suyeong.Core.Text.Diff\Suyeong.Core.Text.Diff.csproj", "{F9E9FCA8-71A6-4446-BD8A-9F42D3142C38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.Text.Diff", "Suyeong.Core.Text.Diff\Suyeong.Core.Text.Diff.csproj", "{F9E9FCA8-71A6-4446-BD8A-9F42D3142C38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.Net.Ftp", "Suyeong.Core.Net.Ftp\Suyeong.Core.Net.Ftp.csproj", "{4C7B9FBF-DAF0-41C7-9752-5437C598E075}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.Net.Ftp", "Suyeong.Core.Net.Ftp\Suyeong.Core.Net.Ftp.csproj", "{4C7B9FBF-DAF0-41C7-9752-5437C598E075}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.DB.MsSql", "Suyeong.Core.DB.MsSql\Suyeong.Core.DB.MsSql.csproj", "{C1796C03-5478-48B2-8D53-0DDCC85D4FA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.DB.MsSql", "Suyeong.Core.DB.MsSql\Suyeong.Core.DB.MsSql.csproj", "{C1796C03-5478-48B2-8D53-0DDCC85D4FA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.DB.MySql", "Suyeong.Core.DB.MySql\Suyeong.Core.DB.MySql.csproj", "{5D28F8CA-90A7-4096-B1B4-00B491ADBF89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.DB.MySql", "Suyeong.Core.DB.MySql\Suyeong.Core.DB.MySql.csproj", "{5D28F8CA-90A7-4096-B1B4-00B491ADBF89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.DB.Sqlite", "Suyeong.Core.DB.Sqlite\Suyeong.Core.DB.Sqlite.csproj", "{7455DEFB-589D-430D-871A-8160D453EBD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.DB.Sqlite", "Suyeong.Core.DB.Sqlite\Suyeong.Core.DB.Sqlite.csproj", "{7455DEFB-589D-430D-871A-8160D453EBD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.DB.Oracle", "Suyeong.Core.DB.Oracle\Suyeong.Core.DB.Oracle.csproj", "{9873EF5A-A8F6-4217-A76F-29AFB33CC766}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.DB.Oracle", "Suyeong.Core.DB.Oracle\Suyeong.Core.DB.Oracle.csproj", "{9873EF5A-A8F6-4217-A76F-29AFB33CC766}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.GoogleVision.OCR", "Suyeong.Core.GoogleVision.OCR\Suyeong.Core.GoogleVision.OCR.csproj", "{9182AB1C-FEE7-438D-AF2B-8BB0AF1651EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.GoogleVision.OCR", "Suyeong.Core.GoogleVision.OCR\Suyeong.Core.GoogleVision.OCR.csproj", "{9182AB1C-FEE7-438D-AF2B-8BB0AF1651EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.GoogleVision.Translate", "Suyeong.Core.GoogleVision.Translate\Suyeong.Core.GoogleVision.Translate.csproj", "{63EEBF1E-FE70-44AE-848B-9984729464E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.GoogleVision.Translate", "Suyeong.Core.GoogleVision.Translate\Suyeong.Core.GoogleVision.Translate.csproj", "{63EEBF1E-FE70-44AE-848B-9984729464E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.Algorithm.DocDetector", "Suyeong.Core.Algorithm.DocDetector\Suyeong.Core.Algorithm.DocDetector.csproj", "{7489871F-468F-4736-9158-042F04A05F8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +83,10 @@ Global
 		{63EEBF1E-FE70-44AE-848B-9984729464E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63EEBF1E-FE70-44AE-848B-9984729464E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63EEBF1E-FE70-44AE-848B-9984729464E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7489871F-468F-4736-9158-042F04A05F8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7489871F-468F-4736-9158-042F04A05F8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7489871F-468F-4736-9158-042F04A05F8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7489871F-468F-4736-9158-042F04A05F8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
