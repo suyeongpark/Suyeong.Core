@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.Net.Udp", "Suy
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.Util", "Suyeong.Core.Util\Suyeong.Core.Util.csproj", "{2C07A544-1BB0-460D-B4A5-534F663577B2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.Text.Diff", "Suyeong.Core.Text.Diff\Suyeong.Core.Text.Diff.csproj", "{F9E9FCA8-71A6-4446-BD8A-9F42D3142C38}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.Net.Ftp", "Suyeong.Core.Net.Ftp\Suyeong.Core.Net.Ftp.csproj", "{4C7B9FBF-DAF0-41C7-9752-5437C598E075}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.DB.MsSql", "Suyeong.Core.DB.MsSql\Suyeong.Core.DB.MsSql.csproj", "{C1796C03-5478-48B2-8D53-0DDCC85D4FA0}"
@@ -26,8 +24,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.GoogleVision.OCR", "Suyeong.Core.GoogleVision.OCR\Suyeong.Core.GoogleVision.OCR.csproj", "{9182AB1C-FEE7-438D-AF2B-8BB0AF1651EE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.GoogleVision.Translate", "Suyeong.Core.GoogleVision.Translate\Suyeong.Core.GoogleVision.Translate.csproj", "{63EEBF1E-FE70-44AE-848B-9984729464E0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.Algorithm.DocDetector", "Suyeong.Core.Algorithm.DocDetector\Suyeong.Core.Algorithm.DocDetector.csproj", "{7489871F-468F-4736-9158-042F04A05F8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,10 +47,6 @@ Global
 		{2C07A544-1BB0-460D-B4A5-534F663577B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C07A544-1BB0-460D-B4A5-534F663577B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C07A544-1BB0-460D-B4A5-534F663577B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9E9FCA8-71A6-4446-BD8A-9F42D3142C38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9E9FCA8-71A6-4446-BD8A-9F42D3142C38}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9E9FCA8-71A6-4446-BD8A-9F42D3142C38}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9E9FCA8-71A6-4446-BD8A-9F42D3142C38}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4C7B9FBF-DAF0-41C7-9752-5437C598E075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4C7B9FBF-DAF0-41C7-9752-5437C598E075}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C7B9FBF-DAF0-41C7-9752-5437C598E075}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -83,10 +75,6 @@ Global
 		{63EEBF1E-FE70-44AE-848B-9984729464E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63EEBF1E-FE70-44AE-848B-9984729464E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63EEBF1E-FE70-44AE-848B-9984729464E0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7489871F-468F-4736-9158-042F04A05F8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7489871F-468F-4736-9158-042F04A05F8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7489871F-468F-4736-9158-042F04A05F8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7489871F-468F-4736-9158-042F04A05F8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
