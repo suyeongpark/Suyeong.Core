@@ -8,7 +8,6 @@ namespace Suyeong.Core.Type
         ILine<T> StartLine { get; }
         ILine<T> EndLine { get; }
         IEnumerable<ILine<T>> Lines { get; }
-        LineOrientation LineOrientation { get; }
         T Length { get; }
     }
 }
