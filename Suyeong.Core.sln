@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.GoogleVision.O
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suyeong.Core.GoogleVision.Translate", "Suyeong.Core.GoogleVision.Translate\Suyeong.Core.GoogleVision.Translate.csproj", "{63EEBF1E-FE70-44AE-848B-9984729464E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Core.Type", "Suyeong.Core.Type\Suyeong.Core.Type.csproj", "{DF10E6F8-EC49-48A9-A034-A69A79137110}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{63EEBF1E-FE70-44AE-848B-9984729464E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63EEBF1E-FE70-44AE-848B-9984729464E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63EEBF1E-FE70-44AE-848B-9984729464E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF10E6F8-EC49-48A9-A034-A69A79137110}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF10E6F8-EC49-48A9-A034-A69A79137110}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF10E6F8-EC49-48A9-A034-A69A79137110}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF10E6F8-EC49-48A9-A034-A69A79137110}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

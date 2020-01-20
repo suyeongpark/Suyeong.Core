@@ -49,14 +49,13 @@ namespace Suyeong.Core.Net.Lib
     [Serializable]
     public class PacketFile : Packet
     {
-        public PacketFile(string protocol, string fileName, byte[] fileData) : base(protocol: protocol)
+        public PacketFile(string protocol, string desc, byte[] fileData) : base(protocol: protocol)
         {
-            this.FileName = fileName;
+            this.Desc = desc;
             this.FileData = fileData;
         }
 
-        public string FileName { get; private set; }
+        public string Desc { get; private set; }
         public byte[] FileData { get; private set; }
     }
-
 }
