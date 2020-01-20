@@ -5,5 +5,6 @@
         T Width { get; }
         T Height { get; }
         T Diagonal { get; }
+        T DiagonalSquare { get; }
     }
 }
